@@ -31,29 +31,20 @@ export async function waitForTodoCreation(
   // Perform the action
   await action();
 
-  // Wait for POST to complete first
+  // Wait for POST to complete
   await postPromise;
 
-  // Now wait for the GET refetch that happens AFTER the invalidation
-  // This ensures we're catching the refetch that includes the new todo
-  const refetchPromise = page.waitForResponse(
-    (resp) =>
-      resp.url().includes("/api/v1/todos") && resp.request().method() === "GET",
-    { timeout: 10000 },
-  );
-
-  await refetchPromise;
-
-  // Important: Give React Query time to process the response and update its cache
-  // before we start polling the DOM for the new todo
-  await page.waitForTimeout(500);
+  // With optimistic updates, the UI is updated immediately from cache
+  // Give React Query + React + Framer Motion time to process and render
+  // Framer Motion has 150ms animation duration
+  await page.waitForTimeout(700);
 
   // If a title is provided, wait for that specific todo to appear
   if (title) {
     await waitForTodoInDOM(page, title, 10000);
   } else {
     // Otherwise, just wait for React Query + React + Framer Motion processing
-    await page.waitForTimeout(700);
+    await page.waitForTimeout(500);
   }
 }
 
@@ -80,18 +71,9 @@ export async function waitForTodoUpdate(
   // Wait for UPDATE to complete
   await updatePromise;
 
-  // With optimistic updates, the UI is already updated
-  // Wait for the refetch to confirm
-  const refetchPromise = page.waitForResponse(
-    (resp) =>
-      resp.url().includes("/api/v1/todos") && resp.request().method() === "GET",
-    { timeout: 10000 },
-  );
-
-  await refetchPromise;
-
-  // Give React Query time to process and confirm the update
-  await page.waitForTimeout(500);
+  // Give React Query + React + Framer Motion time to process and render
+  // Need extra time for animations and state transitions
+  await page.waitForTimeout(800);
 }
 
 /**
@@ -116,19 +98,9 @@ export async function waitForTodoDeletion(
   // Wait for DELETE to complete
   await deletePromise;
 
-  // With optimistic updates, the todo is already removed from UI
-  // Wait for the refetch to happen and settle
-  const refetchPromise = page.waitForResponse(
-    (resp) =>
-      resp.url().includes("/api/v1/todos") && resp.request().method() === "GET",
-    { timeout: 10000 },
-  );
-
-  await refetchPromise;
-
-  // Give React Query time to process the server response and update the UI
-  // This ensures the optimistic update is confirmed by the server
-  await page.waitForTimeout(500);
+  // Give React Query + React + Framer Motion time to process and render
+  // Exit animations need extra time
+  await page.waitForTimeout(800);
 }
 
 /**

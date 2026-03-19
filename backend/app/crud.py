@@ -81,8 +81,8 @@ async def create_todo(db: AsyncSession, todo: TodoCreate) -> Todo:
     """
     db_todo = Todo(**todo.model_dump())
     db.add(db_todo)
-    await db.flush()
-    await db.refresh(db_todo)
+    await db.flush()  # Flush to generate ID and timestamps without committing
+    await db.refresh(db_todo)  # Refresh to get DB-generated values
     return db_todo
 
 
@@ -102,12 +102,16 @@ async def update_todo(db: AsyncSession, todo_id: str, todo_update: TodoUpdate) -
     if db_todo is None:
         return None
 
-    # Update only provided fields
+    # Update only provided fields (exclude_unset=True skips None values)
+    # This allows partial updates - e.g., changing only title or
+    # only completed status
     update_data = todo_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(db_todo, field, value)
 
+    # Flush changes to DB but don't commit yet (handled by dependency)
     await db.flush()
+    # Refresh to get any DB-generated values (like updated_at)
     await db.refresh(db_todo)
     return db_todo
 

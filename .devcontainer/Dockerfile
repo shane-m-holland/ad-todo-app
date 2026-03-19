@@ -34,6 +34,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Playwright browsers and system dependencies
+# This installs chromium, firefox, and webkit along with all required system libraries
+RUN npx -y playwright@latest install --with-deps
+
 # Install Docker Engine (full daemon for Docker-in-Docker)
 # Pinned to version 29.1.4 for reproducible builds
 ENV DOCKER_VERSION=5:29.1.4-1~ubuntu.24.04~noble

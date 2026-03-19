@@ -19,8 +19,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             refetchOnWindowFocus: false,
             // Retry failed requests once
             retry: 1,
-            // Cache data for 5 minutes
-            staleTime: 5 * 60 * 1000,
+            // Consider data fresh for 1 second to reduce unnecessary refetches
+            // while still maintaining good data consistency
+            staleTime: 1000,
           },
         },
       }),

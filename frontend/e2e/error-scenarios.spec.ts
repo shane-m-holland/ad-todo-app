@@ -224,16 +224,20 @@ test.describe("Todo App - Error Scenarios", () => {
     await waitForTodoUpdate(page, async () => {
       await checkbox.click();
     });
+    // Wait a bit longer for Framer Motion animations to complete
+    await page.waitForTimeout(300);
     await expect(todoText).toHaveClass(/line-through/);
 
     await waitForTodoUpdate(page, async () => {
       await checkbox.click();
     });
+    await page.waitForTimeout(300);
     await expect(todoText).not.toHaveClass(/line-through/);
 
     await waitForTodoUpdate(page, async () => {
       await checkbox.click();
     });
+    await page.waitForTimeout(300);
 
     // Verify final state is complete (has line-through)
     await expect(todoText).toHaveClass(/line-through/);

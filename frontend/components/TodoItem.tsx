@@ -93,7 +93,7 @@ export function TodoItem({ todo }: TodoItemProps) {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.15 }}
       className="bg-white rounded-lg border-2 border-gray-200 p-4 hover:border-primary-300 transition-colors shadow-sm"
       data-testid={`todo-item-${todo.id}`}
     >

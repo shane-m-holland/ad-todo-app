@@ -46,16 +46,12 @@ export function useCreateTodo() {
   return useMutation({
     mutationFn: createTodo,
     onSuccess: (newTodo) => {
-      // Directly add the new todo to the cache
+      // Optimistically add the new todo to the cache for instant UI update
+      // The server has already confirmed the todo was created
       queryClient.setQueryData<Todo[]>(TODOS_QUERY_KEY, (old) => {
         if (!old) return [newTodo];
         return [...old, newTodo];
       });
-
-      // Schedule a background refetch after a delay for eventual consistency
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: TODOS_QUERY_KEY });
-      }, 2000);
     },
   });
 }
@@ -72,46 +68,15 @@ export function useUpdateTodo() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: TodoUpdate }) =>
       updateTodo(id, data),
-    // Optimistically update the cache before the mutation
-    onMutate: async ({ id, data }) => {
-      // Cancel outgoing refetches to avoid overwriting optimistic update
-      await queryClient.cancelQueries({ queryKey: TODOS_QUERY_KEY });
-
-      // Snapshot the previous value for rollback
-      const previousTodos = queryClient.getQueryData<Todo[]>(TODOS_QUERY_KEY);
-
-      // Optimistically update the todos list
-      queryClient.setQueryData<Todo[]>(TODOS_QUERY_KEY, (old) => {
-        if (!old) return old;
-        return old.map((todo) =>
-          todo.id === id ? { ...todo, ...data } : todo,
-        );
-      });
-
-      // Return context with previous value for rollback
-      return { previousTodos };
-    },
-    // On success, update cache with the authoritative server response
+    // On success, update cache with server response
     onSuccess: (updatedTodo) => {
-      // Replace the optimistic update with the actual server data
+      // Update cache with the actual server data
       queryClient.setQueryData<Todo[]>(TODOS_QUERY_KEY, (old) => {
         if (!old) return old;
         return old.map((todo) =>
           todo.id === updatedTodo.id ? updatedTodo : todo,
         );
       });
-
-      // Schedule a background refetch after a delay to catch any other changes
-      // This provides eventual consistency without causing race conditions
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: TODOS_QUERY_KEY });
-      }, 2000);
-    },
-    // If mutation fails, rollback to previous value
-    onError: (err, variables, context) => {
-      if (context?.previousTodos) {
-        queryClient.setQueryData(TODOS_QUERY_KEY, context.previousTodos);
-      }
     },
   });
 }
@@ -127,37 +92,13 @@ export function useDeleteTodo() {
 
   return useMutation({
     mutationFn: deleteTodo,
-    // Optimistically remove from cache before the mutation
-    onMutate: async (id: string) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: TODOS_QUERY_KEY });
-
-      // Snapshot the previous value for rollback
-      const previousTodos = queryClient.getQueryData<Todo[]>(TODOS_QUERY_KEY);
-
-      // Optimistically remove the todo from the list
+    // On success, remove from cache
+    onSuccess: (_data, deletedId) => {
+      // Remove the deleted todo from cache
       queryClient.setQueryData<Todo[]>(TODOS_QUERY_KEY, (old) => {
         if (!old) return old;
-        return old.filter((todo) => todo.id !== id);
+        return old.filter((todo) => todo.id !== deletedId);
       });
-
-      // Return context with previous value for rollback
-      return { previousTodos };
-    },
-    // On success, the optimistic update is confirmed - no action needed
-    // The todo is already removed from cache
-    onSuccess: () => {
-      // Schedule a background refetch after a delay for eventual consistency
-      // This catches any other changes without causing immediate race conditions
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: TODOS_QUERY_KEY });
-      }, 2000);
-    },
-    // If mutation fails, rollback to previous value
-    onError: (err, variables, context) => {
-      if (context?.previousTodos) {
-        queryClient.setQueryData(TODOS_QUERY_KEY, context.previousTodos);
-      }
     },
   });
 }

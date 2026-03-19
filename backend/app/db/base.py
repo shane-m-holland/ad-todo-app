@@ -29,10 +29,10 @@ Base = declarative_base()
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     Dependency function that yields database sessions.
-    
+
     Yields:
         AsyncSession: An async database session
-        
+
     Example:
         @app.get("/items")
         async def get_items(db: AsyncSession = Depends(get_db)):
