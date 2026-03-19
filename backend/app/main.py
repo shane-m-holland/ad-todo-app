@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
+from app.api.v1 import api_router
 
 # Create FastAPI application instance
 app = FastAPI(
@@ -22,12 +23,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include API v1 router
+app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+
 
 @app.get("/")
 async def root() -> dict[str, str]:
     """
     Root endpoint that returns a welcome message.
-    
+
     Returns:
         dict: A welcome message with API information
     """
@@ -42,7 +46,7 @@ async def root() -> dict[str, str]:
 async def health_check() -> dict[str, str]:
     """
     Health check endpoint for monitoring and container orchestration.
-    
+
     Returns:
         dict: Health status of the application
     """

@@ -14,7 +14,7 @@ from app.core.config import settings
 from app.db.base import Base
 
 # Import all models here to ensure they're registered with Base.metadata
-# from app.models.todo import Todo  # Will be imported after model is created
+from app.models.todo import Todo  # noqa: F401
 
 # Alembic Config object
 config = context.config
@@ -33,11 +33,11 @@ target_metadata = Base.metadata
 def run_migrations_offline() -> None:
     """
     Run migrations in 'offline' mode.
-    
+
     This configures the context with just a URL and not an Engine,
     though an Engine is acceptable here as well. By skipping the Engine
     creation we don't even need a DBAPI to be available.
-    
+
     Calls to context.execute() here emit the given string to the
     script output.
     """
@@ -56,7 +56,7 @@ def run_migrations_offline() -> None:
 def do_run_migrations(connection: Connection) -> None:
     """
     Execute migrations with the given database connection.
-    
+
     Args:
         connection: SQLAlchemy database connection
     """
@@ -69,7 +69,7 @@ def do_run_migrations(connection: Connection) -> None:
 async def run_async_migrations() -> None:
     """
     Run migrations in async mode.
-    
+
     Creates an async engine and runs migrations within an async context.
     """
     connectable = async_engine_from_config(
@@ -87,7 +87,7 @@ async def run_async_migrations() -> None:
 def run_migrations_online() -> None:
     """
     Run migrations in 'online' mode.
-    
+
     In this scenario we need to create an Engine and associate a
     connection with the context.
     """
