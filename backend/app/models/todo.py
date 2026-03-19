@@ -1,7 +1,7 @@
 """SQLAlchemy model for TODO items."""
 
 import uuid
-from datetime import datetime, UTC
+from datetime import datetime
 from sqlalchemy import Boolean, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -44,15 +44,15 @@ class Todo(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(UTC),
+        default=datetime.utcnow,
         nullable=False,
         doc="Timestamp when the todo was created",
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
         nullable=False,
         doc="Timestamp when the todo was last updated",
     )

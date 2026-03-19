@@ -5,19 +5,20 @@ WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    curl \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:$PATH"
+# Install uv using pip
+RUN pip install --no-cache-dir uv
 
 # Copy dependency files
 COPY pyproject.toml ./
 
 # Install dependencies using uv
 RUN uv sync
+
+# Add virtual environment to PATH
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy application code
 COPY . .

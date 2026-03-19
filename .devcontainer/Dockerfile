@@ -25,8 +25,14 @@ RUN apt-get update && apt-get install -y \
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     mv /root/.local/bin/uv /usr/local/bin/uv && \
     mv /root/.local/bin/uvx /usr/local/bin/uvx
- 
+
 RUN uv python --native-tls install 3.13
+
+# Install Node.js and npm
+# Using NodeSource repository for latest Node.js LTS (v20.x)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Docker Engine (full daemon for Docker-in-Docker)
 # Pinned to version 29.1.4 for reproducible builds
@@ -37,11 +43,11 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
     && apt-get update \
     && apt-cache madison docker-ce | head -5 \
     && apt-get install -y \
-        docker-ce=${DOCKER_VERSION} \
-        docker-ce-cli=${DOCKER_VERSION} \
-        containerd.io \
-        docker-buildx-plugin \
-        docker-compose-plugin \
+    docker-ce=${DOCKER_VERSION} \
+    docker-ce-cli=${DOCKER_VERSION} \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
 # Create docker group and add vscode user to it (for Docker-in-Docker)
