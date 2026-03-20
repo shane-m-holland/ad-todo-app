@@ -1,0 +1,182 @@
+{
+  "api-endpoints": {
+    "description": "RESTful API endpoint definitions using FastAPI routers",
+    "required_patterns": {
+      "router-definition": "Must use APIRouter with prefix and tags for endpoint grouping",
+      "dependency-injection": "Must use Depends() for database sessions and other dependencies",
+      "async-handlers": "All endpoint handlers must be async functions",
+      "response-models": "Must specify response_model using Pydantic schemas",
+      "http-status-codes": "Must use appropriate HTTP status codes from fastapi.status",
+      "error-handling": "Must raise HTTPException for error cases with appropriate status codes",
+      "query-parameters": "Must use Query() for query parameter validation with defaults and constraints",
+      "documentation": "Must include comprehensive docstrings with Args, Returns, and Raises sections"
+    },
+    "architectural_constraints": {
+      "separation-of-concerns": "Endpoints must not contain business logic - delegate to CRUD layer",
+      "database-access": "Must use get_db dependency, never create sessions directly",
+      "validation": "All input/output must use Pydantic schemas from app.schemas",
+      "crud-delegation": "All database operations must go through app.crud functions"
+    }
+  },
+  "database": {
+    "description": "Database models, session management, and migrations using SQLAlchemy and Alembic",
+    "required_patterns": {
+      "model-definition": "Must inherit from Base and use SQLAlchemy 2.0 style with Mapped and mapped_column",
+      "async-sessions": "All database operations must use AsyncSession",
+      "uuid-ids": "Primary keys must be UUID strings (using uuid.uuid4())",
+      "timestamps": "Models should include created_at and updated_at DateTime fields",
+      "table-names": "Must explicitly set __tablename__ attribute",
+      "type-annotations": "Must use Mapped[] type hints for all columns",
+      "migrations": "All schema changes must be done through Alembic migrations"
+    },
+    "architectural_constraints": {
+      "async-only": "No synchronous database operations allowed",
+      "no-raw-sql": "Must use SQLAlchemy ORM, not raw SQL queries",
+      "migration-required": "Never modify models without creating corresponding Alembic migration",
+      "session-lifecycle": "Sessions managed by dependency injection, never create manually in endpoints"
+    }
+  },
+  "data-layer": {
+    "description": "CRUD operations layer that abstracts database access from API endpoints",
+    "required_patterns": {
+      "crud-module": "All database operations must be in app/crud.py (or app/crud/ directory for larger apps)",
+      "async-functions": "All CRUD functions must be async",
+      "session-parameter": "All CRUD functions must accept AsyncSession as first parameter",
+      "return-types": "Must use clear return type annotations (Model | None, Sequence[Model], bool, int)",
+      "error-handling": "Return None for not found, let caller decide on exception handling",
+      "comprehensive-docs": "Must include docstrings with Args and Returns sections"
+    },
+    "architectural_constraints": {
+      "no-exceptions": "CRUD layer should not raise HTTP exceptions (that's for endpoints)",
+      "atomic-operations": "Use flush() instead of commit() - commits handled by dependency",
+      "refresh-pattern": "After flush, use refresh() to get DB-generated values"
+    }
+  },
+  "validation": {
+    "description": "Request/response validation using Pydantic schemas",
+    "required_patterns": {
+      "base-schema": "Use inheritance with Base schema for shared attributes",
+      "field-validation": "Use Field() with constraints (min_length, max_length, description)",
+      "create-update-pattern": "Separate schemas for Create (required fields) and Update (optional fields)",
+      "response-schema": "Separate response schema that matches database model",
+      "model-config": "Use ConfigDict for Pydantic v2 configuration",
+      "type-hints": "Use modern Python type hints (str | None instead of Optional[str])"
+    },
+    "architectural_constraints": {
+      "no-orm-in-schemas": "Schemas should not import database models",
+      "validate-at-boundary": "All API inputs must be validated through Pydantic schemas",
+      "consistent-naming": "Schema naming: {Model}Base, {Model}Create, {Model}Update, {Model}Response"
+    }
+  },
+  "state-management": {
+    "description": "Client-side server state management using React Query (@tanstack/react-query)",
+    "required_patterns": {
+      "query-hooks": "Create custom hooks for all queries (useTodos, useTodo)",
+      "mutation-hooks": "Create custom hooks for all mutations (useCreateTodo, useUpdateTodo, useDeleteTodo)",
+      "query-keys": "Use centralized query key constants (TODOS_QUERY_KEY)",
+      "query-client": "Access queryClient via useQueryClient hook",
+      "optimistic-updates": "Use onSuccess callbacks to update cache for immediate UI feedback",
+      "cache-manipulation": "Use setQueryData to update cache after mutations"
+    },
+    "architectural_constraints": {
+      "no-local-state-for-server-data": "Never use useState for data that comes from the server",
+      "centralized-queries": "All React Query hooks must be in services/queries.ts",
+      "api-separation": "Query hooks call functions from services/api.ts, never make fetch calls directly",
+      "cache-invalidation": "Use setQueryData for updates, not invalidateQueries (for better UX)"
+    }
+  },
+  "ui": {
+    "description": "React components using TypeScript, Next.js App Router, and Tailwind CSS",
+    "required_patterns": {
+      "typescript": "All components must use TypeScript with proper type annotations",
+      "client-components": "Interactive components must use 'use client' directive",
+      "props-interface": "Define interface for component props with JSDoc comments",
+      "tailwind-styling": "Use Tailwind utility classes for styling (no CSS modules)",
+      "component-docs": "Include JSDoc comment describing component purpose and props",
+      "test-ids": "Include data-testid attributes for testing",
+      "accessibility": "Use semantic HTML and proper ARIA attributes"
+    },
+    "architectural_constraints": {
+      "component-location": "Reusable components in components/, pages in app/",
+      "no-inline-styles": "Never use style prop, use Tailwind classes",
+      "no-css-files-per-component": "All styling via Tailwind, no component-specific CSS files",
+      "app-router": "Use Next.js App Router structure (not Pages Router)"
+    }
+  },
+  "forms": {
+    "description": "Form handling using react-hook-form",
+    "required_patterns": {
+      "use-form-hook": "Must use useForm hook for form state management",
+      "register-inputs": "Register inputs using register() function",
+      "handle-submit": "Use handleSubmit wrapper for form submission",
+      "validation-rules": "Define validation rules in register() call (required, minLength, maxLength, validate)",
+      "error-display": "Display errors from formState.errors",
+      "controlled-components": "Use register pattern, not controlled components with useState",
+      "reset-on-success": "Call reset() after successful submission"
+    },
+    "architectural_constraints": {
+      "no-manual-state": "Never use useState to manage form field values",
+      "validation-in-register": "Validation rules must be in register(), not separate logic",
+      "mutation-integration": "Integrate with React Query mutations for server submission"
+    }
+  },
+  "animation": {
+    "description": "UI animations using framer-motion",
+    "required_patterns": {
+      "motion-components": "Use motion.div, motion.button instead of regular HTML elements",
+      "animation-variants": "Define animation states for complex animations",
+      "layout-animations": "Use layout prop for automatic layout animations"
+    },
+    "architectural_constraints": {
+      "performance": "Use transform and opacity for performant animations",
+      "accessibility": "Respect prefers-reduced-motion user preference"
+    }
+  },
+  "testing": {
+    "description": "Comprehensive testing strategy with pytest (backend), jest (frontend unit), and playwright (E2E)",
+    "required_patterns": {
+      "backend-testing": "Use pytest with pytest-asyncio for async tests",
+      "in-memory-db": "Backend tests use SQLite in-memory database",
+      "test-fixtures": "Use pytest fixtures for test setup (db_session, client)",
+      "frontend-unit-tests": "Use Jest with @testing-library/react",
+      "e2e-tests": "Use Playwright for end-to-end testing",
+      "test-helpers": "Create reusable helpers for common test operations",
+      "descriptive-names": "Test function names should clearly describe what is being tested"
+    },
+    "architectural_constraints": {
+      "isolated-tests": "Each test must be independent and not rely on other tests",
+      "mock-external-services": "Mock external dependencies, never hit real external services",
+      "test-coverage": "Maintain high test coverage for critical paths",
+      "test-organization": "Backend tests in tests/, frontend tests in __tests/, E2E in e2e/"
+    }
+  },
+  "styling": {
+    "description": "Utility-first styling using Tailwind CSS",
+    "required_patterns": {
+      "utility-classes": "Use Tailwind utility classes for all styling",
+      "responsive-design": "Use Tailwind responsive prefixes (sm:, md:, lg:)",
+      "color-scheme": "Use Tailwind color palette (gray-*, blue-*, etc.)",
+      "spacing-scale": "Use Tailwind spacing scale (px-4, py-3, mb-8)",
+      "transitions": "Use transition-* utilities for smooth state changes"
+    },
+    "architectural_constraints": {
+      "no-custom-css": "Avoid custom CSS classes unless necessary for complex animations",
+      "design-tokens": "Use Tailwind config for custom design tokens, not inline values",
+      "consistent-spacing": "Follow Tailwind spacing scale consistently"
+    }
+  },
+  "configuration": {
+    "description": "Environment-based configuration using pydantic-settings (backend) and Next.js env vars (frontend)",
+    "required_patterns": {
+      "backend-config": "Use pydantic-settings BaseSettings class for configuration",
+      "env-files": "Store sensitive config in .env files, not in code",
+      "frontend-env": "Use NEXT_PUBLIC_ prefix for client-side environment variables",
+      "type-safe-config": "All configuration values must be type-annotated"
+    },
+    "architectural_constraints": {
+      "no-hardcoded-urls": "Never hardcode URLs or API endpoints",
+      "environment-specific": "Support different configs for development, testing, production",
+      "secrets-management": "Never commit secrets or API keys to version control"
+    }
+  }
+}

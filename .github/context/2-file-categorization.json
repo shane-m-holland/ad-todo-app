@@ -1,0 +1,122 @@
+{
+  "api-endpoints": [
+    "./backend/app/api/v1/endpoints/todos.py"
+  ],
+  "api-routers": [
+    "./backend/app/api/__init__.py",
+    "./backend/app/api/v1/__init__.py"
+  ],
+  "api-clients": [
+    "./frontend/services/api.ts"
+  ],
+  "database-models": [
+    "./backend/app/models/todo.py"
+  ],
+  "database-configuration": [
+    "./backend/app/db/base.py"
+  ],
+  "database-migrations": [
+    "./backend/alembic/env.py",
+    "./backend/alembic/versions/001_create_todos_table.py",
+    "./backend/alembic/script.py.mako"
+  ],
+  "pydantic-schemas": [
+    "./backend/app/schemas/todo.py"
+  ],
+  "typescript-types": [
+    "./frontend/types/todo.ts"
+  ],
+  "crud-operations": [
+    "./backend/app/crud.py"
+  ],
+  "react-query-hooks": [
+    "./frontend/services/queries.ts"
+  ],
+  "react-components": [
+    "./frontend/components/TodoForm.tsx",
+    "./frontend/components/TodoItem.tsx",
+    "./frontend/components/TodoList.tsx"
+  ],
+  "react-pages": [
+    "./frontend/app/page.tsx"
+  ],
+  "react-layouts": [
+    "./frontend/app/layout.tsx"
+  ],
+  "react-providers": [
+    "./frontend/app/providers.tsx"
+  ],
+  "application-entry": [
+    "./backend/app/main.py"
+  ],
+  "configuration": [
+    "./backend/app/core/config.py",
+    "./backend/pyproject.toml",
+    "./backend/alembic.ini",
+    "./frontend/package.json",
+    "./frontend/tsconfig.json",
+    "./frontend/.eslintrc.json",
+    "./frontend/next.config.js",
+    "./frontend/tailwind.config.ts",
+    "./frontend/postcss.config.js",
+    "./frontend/playwright.config.ts",
+    "./frontend/jest.config.js",
+    "./frontend/jest.setup.js",
+    "./.devcontainer/devcontainer.json"
+  ],
+  "infrastructure": [
+    "./docker-compose.yml",
+    "./backend/Dockerfile",
+    "./frontend/Dockerfile",
+    "./.devcontainer/Dockerfile"
+  ],
+  "testing-pytest": [
+    "./backend/tests/conftest.py",
+    "./backend/tests/test_api.py",
+    "./backend/tests/test_crud.py",
+    "./backend/tests/test_main.py",
+    "./backend/tests/test_models.py"
+  ],
+  "testing-jest": [
+    "./frontend/__tests__/components/TodoItem.test.tsx",
+    "./frontend/__tests__/components/TodoList.test.tsx",
+    "./frontend/__tests__/components/TodoForm.test.tsx",
+    "./frontend/__tests__/services/queries.test.tsx",
+    "./frontend/__tests__/services/api.test.ts",
+    "./frontend/__tests__/app/page.test.tsx",
+    "./frontend/__tests__/app/providers.test.tsx"
+  ],
+  "testing-e2e": [
+    "./frontend/e2e/happy-paths.spec.ts",
+    "./frontend/e2e/error-scenarios.spec.ts"
+  ],
+  "testing-helpers": [
+    "./frontend/e2e/helpers/api.ts",
+    "./frontend/e2e/helpers/clear-database.ts",
+    "./frontend/e2e/helpers/waiters.ts"
+  ],
+  "styling": [
+    "./frontend/app/globals.css"
+  ],
+  "documentation": [
+    "./README.md",
+    "./CONTRIBUTING.md",
+    "./frontend/README.md",
+    "./todo-app-plan.md"
+  ],
+  "python-package-init": [
+    "./backend/app/__init__.py",
+    "./backend/app/models/__init__.py",
+    "./backend/app/schemas/__init__.py",
+    "./backend/app/api/__init__.py",
+    "./backend/app/api/v1/__init__.py",
+    "./backend/app/api/v1/endpoints/__init__.py",
+    "./backend/app/core/__init__.py",
+    "./backend/app/db/__init__.py",
+    "./backend/tests/__init__.py"
+  ],
+  "gitignore": [
+    "./.gitignore",
+    "./frontend/.gitignore"
+  ]
+}
