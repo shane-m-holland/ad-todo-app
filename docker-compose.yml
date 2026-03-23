@@ -2,6 +2,8 @@ services:
   db:
     image: postgres:16-alpine
     container_name: todo-db
+    networks:
+      - todo
     environment:
       POSTGRES_USER: todouser
       POSTGRES_PASSWORD: todopass
@@ -21,11 +23,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: todo-backend
+    network_mode: "host"
     environment:
-      DATABASE_URL: postgresql+asyncpg://todouser:todopass@db:5432/tododb
+      DATABASE_URL: postgresql+asyncpg://todouser:todopass@localhost/tododb
       ENVIRONMENT: development
-    ports:
-      - "8000:8000"
     volumes:
       - ./backend:/app
       - backend-venv:/app/.venv
@@ -40,17 +41,18 @@ services:
       dockerfile: Dockerfile
     container_name: todo-frontend
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_API_URL: https://jubilant-palm-tree-x55j5p7644wq3pqxg-8000.app.github.dev
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
-    depends_on:
-      - backend
     command: npm run dev
 
 volumes:
   postgres_data:
   backend-venv:
+
+networks:
+  todo:
