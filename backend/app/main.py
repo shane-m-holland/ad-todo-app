@@ -12,6 +12,8 @@ app = FastAPI(
     description="A simple TODO application API built with FastAPI and PostgreSQL",
     version="0.1.0",
     openapi_url=f"{settings.API_V1_PREFIX}/openapi.json",
+    docs_url=f"{settings.API_V1_PREFIX}/docs",
+    redoc_url=f"{settings.API_V1_PREFIX}/redoc",
 )
 
 # Configure CORS middleware
