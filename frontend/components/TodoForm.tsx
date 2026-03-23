@@ -73,10 +73,10 @@ export function TodoForm() {
               type="text"
               placeholder="What needs to be done?"
               data-testid="todo-input"
-              className={`w-full px-4 py-3 rounded-lg border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+              className={`w-full px-4 py-3 rounded-lg border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 ${
                 errors.title
-                  ? "border-red-300 bg-red-50"
-                  : "border-gray-200 bg-white"
+                  ? "border-red-300 bg-red-50 dark:border-red-600 dark:bg-red-900/20"
+                  : "border-gray-200 bg-white dark:border-gray-600"
               }`}
               {...register("title", {
                 required: "Todo title is required",
@@ -115,8 +115,8 @@ export function TodoForm() {
         <div
           className={`mt-4 p-3 rounded-lg animate-slide-in ${
             feedback.type === "success"
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-red-50 text-red-800 border border-red-200"
+              ? "bg-green-50 text-green-800 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700"
+              : "bg-red-50 text-red-800 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-700"
           }`}
           role="alert"
         >

@@ -94,7 +94,7 @@ export function TodoItem({ todo }: TodoItemProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
       transition={{ duration: 0.15 }}
-      className="bg-white rounded-lg border-2 border-gray-200 p-4 hover:border-primary-300 transition-colors shadow-sm"
+      className="bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 p-4 hover:border-primary-300 dark:hover:border-primary-600 transition-colors shadow-sm"
       data-testid={`todo-item-${todo.id}`}
     >
       <div className="flex items-center gap-3">
@@ -118,15 +118,15 @@ export function TodoItem({ todo }: TodoItemProps) {
               onChange={(e) => setEditTitle(e.target.value)}
               onKeyDown={handleKeyDown}
               onBlur={handleSaveEdit}
-              className="w-full px-2 py-1 border-2 border-primary-500 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full px-2 py-1 border-2 border-primary-500 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-700 dark:text-gray-100"
               autoFocus
               disabled={updateTodo.isPending}
               data-testid={`todo-edit-input-${todo.id}`}
             />
           ) : (
             <span
-              className={`text-gray-800 ${
-                todo.completed ? "line-through text-gray-400" : ""
+              className={`text-gray-800 dark:text-gray-100 ${
+                todo.completed ? "line-through text-gray-400 dark:text-gray-500" : ""
               }`}
               onDoubleClick={handleStartEdit}
               title="Double-click to edit"
@@ -144,7 +144,7 @@ export function TodoItem({ todo }: TodoItemProps) {
               <button
                 onClick={handleStartEdit}
                 disabled={updateTodo.isPending || deleteTodo.isPending}
-                className="px-3 py-1 text-sm text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded transition-colors disabled:opacity-50"
+                className="px-3 py-1 text-sm text-primary-600 hover:text-primary-700 hover:bg-primary-50 dark:text-primary-400 dark:hover:text-primary-300 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
                 aria-label={`Edit "${todo.title}"`}
                 data-testid={`todo-edit-button-${todo.id}`}
               >
@@ -153,7 +153,7 @@ export function TodoItem({ todo }: TodoItemProps) {
               <button
                 onClick={handleDelete}
                 disabled={updateTodo.isPending || deleteTodo.isPending}
-                className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                className="px-3 py-1 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
                 aria-label={`Delete "${todo.title}"`}
                 data-testid={`todo-delete-button-${todo.id}`}
               >
@@ -166,7 +166,7 @@ export function TodoItem({ todo }: TodoItemProps) {
 
       {/* Metadata */}
       <div
-        className="mt-2 text-xs text-gray-500"
+        className="mt-2 text-xs text-gray-500 dark:text-gray-400"
         data-testid={`todo-metadata-${todo.id}`}
       >
         Created: {new Date(todo.created_at).toLocaleDateString()}
