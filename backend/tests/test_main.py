@@ -45,3 +45,23 @@ class TestMainApp:
         assert "openapi" in data
         assert "info" in data
         assert data["info"]["title"] == "TODO API"
+
+    @pytest.mark.asyncio
+    async def test_swagger_ui_docs(self, client: AsyncClient):
+        """Test that Swagger UI docs are accessible at the versioned path."""
+        # Act
+        response = await client.get("/api/v1/docs")
+
+        # Assert
+        assert response.status_code == 200
+        assert "text/html" in response.headers["content-type"]
+
+    @pytest.mark.asyncio
+    async def test_redoc_docs(self, client: AsyncClient):
+        """Test that ReDoc docs are accessible at the versioned path."""
+        # Act
+        response = await client.get("/api/v1/redoc")
+
+        # Assert
+        assert response.status_code == 200
+        assert "text/html" in response.headers["content-type"]
